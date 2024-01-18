@@ -13,4 +13,7 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
   

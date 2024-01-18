@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// prisma/schema.prisma
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL") // URL de connexion à la base de données MySQL
+}
+
+// Définition du modèle de données (exemple avec un modèle "User")
+model User {
+  id    Int     @id @default(autoincrement())
+  name  String
+  email String  @unique
+}
+
+// Génération du client Prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client" // Emplacement où le client Prisma sera généré
+}
