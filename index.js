@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 const apiKeyMiddleware = (req, res, next) => {
   const apiKey = req.headers['api-key'];
 
-  if (apiKey && apiKey === 'votre_api_key_secrete') {
+  if (apiKey && apiKey === 'fbc4c50244e157ee') {
     next();
   } else {
     res.status(401).json({ error: 'Unauthorized' });
@@ -40,7 +40,7 @@ const apiKeyMiddleware = (req, res, next) => {
 };
 
 // Appliquer le middleware uniquement aux routes nécessitant une clé d'API
-app.use('/api', apiKeyMiddleware);
+app.use(apiKeyMiddleware);
 
 /**
  * @swagger
