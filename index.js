@@ -16,6 +16,7 @@ const swaggerOptions = {
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
+console.log(swaggerDocs);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
@@ -25,6 +26,21 @@ app.use((req, res, next) => {
   console.log('AUTH TIME:', event.toString());
   next();
 });
+
+/***** Middleware pour gérer l'authentification par clé d'API */
+
+const apiKeyMiddleware = (req, res, next) => {
+  const apiKey = req.headers['api-key'];
+
+  if (apiKey && apiKey === 'votre_api_key_secrete') {
+    next();
+  } else {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+};
+
+// Appliquer le middleware uniquement aux routes nécessitant une clé d'API
+app.use('/api', apiKeyMiddleware);
 
 /**
  * @swagger
@@ -65,16 +81,6 @@ app.get('/api', (req, res) => {
     title: "Ecole241"
   }]);
 });
-
-const apiKeyMiddleware = (req, res, next) => {
-  const apiKey = req.headers['api-key'];
-
-  if (apiKey && apiKey === 'votre_api_key_secrete') {
-    next();
-  } else {
-    res.status(401).json({ error: 'Unauthorized' });
-  }
-};
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
