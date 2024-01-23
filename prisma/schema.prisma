@@ -29,6 +29,7 @@ model Reservation {
   id_passager            Int
   passager               Passager @relation(fields: [id_passager], references: [id_passager])
   trajet                 Trajet   @relation(fields: [id_trajet], references: [id_trajet])
+  status                 String
 }
 
 model Conducteur {
