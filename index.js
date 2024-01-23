@@ -29,23 +29,23 @@ app.use((req, res, next) => {
 
 /***** Middleware pour gérer l'authentification par clé d'API */
 
-const dotenv = require('dotenv');
-dotenv.config();
+// const dotenv = require('dotenv');
+// dotenv.config();
 
-const apiKeyMiddleware = (req, res, next) => {
-  const apiKey = req.headers['api-key'];
-  const expectedApiKey = process.env.API_KEY;
+// const apiKeyMiddleware = (req, res, next) => {
+//   const apiKey = req.headers['api-key'];
+//   const expectedApiKey = process.env.API_KEY;
 
-  if (apiKey && apiKey === expectedApiKey) {
-    next();
-  } else {
-    res.status(401).json({ erreur: 'Non autorisé' });
-  }
-};
+//   if (apiKey && apiKey === expectedApiKey) {
+//     next();
+//   } else {
+//     res.status(401).json({ erreur: 'Non autorisé' });
+//   }
+// };
 
 
-// Appliquer le middleware uniquement aux routes nécessitant une clé d'API
-app.use(apiKeyMiddleware);
+// // Appliquer le middleware uniquement aux routes nécessitant une clé d'API
+// app.use(apiKeyMiddleware);
 
 /**
  * @swagger
