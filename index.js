@@ -136,23 +136,6 @@ app.get('/api/passager', async (req, res) => {
  * /api/passager:
  *   post:
  *     summary: Crée un nouveau passager
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nom_passager:
- *                 type: string
- *               prenom_passager:
- *                 type: string
- *               numero_de_telephone:
- *                 type: string
- *               mot_de_passe:
- *                 type: string
- *               photo_passager:
- *                 type: string
  *     responses:
  *       200:
  *         description: Nouveau passager créé
@@ -193,6 +176,24 @@ app.post('/api/passager', apiKeyMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/passager/{id}:
+ *   put:
+ *     summary: Met à jour un passager existant
+ *     responses:
+ *       200:
+ *         description: Passager mis à jour
+ *         content:
+ *           application/json:
+ *             example:
+ *               id: 10
+ *               nom_passager: MBA ALLOGO
+ *               prenom_passager: benjamin
+ *               numero_de_telephone: 066948438
+ *               mot_de_passe: 1234
+ *               photo_passager: image.jpg
+ */
 
 app.put('/api/passager/:id', apiKeyMiddleware, async (req, res) => {
   try {
@@ -222,6 +223,20 @@ app.put('/api/passager/:id', apiKeyMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/passager/{id}:
+ *   delete:
+ *     summary: Supprime un passager existant
+ *     responses:
+ *       200:
+ *         description: Passager supprimé
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Passager supprimé avec succès
+ */
+
 app.delete('/api/passager/:id', apiKeyMiddleware, async (req, res) => {
   try {
     const passagerId = parseInt(req.params.id, 10); // Obtenez l'ID du passager à partir des paramètres de l'URL
@@ -244,10 +259,10 @@ app.delete('/api/passager/:id', apiKeyMiddleware, async (req, res) => {
  * @swagger
  * /api/conducteur:
  *   get:
- *     summary: Récupère la liste des passagers enregistrés
+ *     summary: Récupère la liste des conducteur enregistrés
  *     responses:
  *       200:
- *         description: Liste des passagers
+ *         description: Liste des Conducteur
  *         content:
  *           application/json:
  *             example:
@@ -274,6 +289,30 @@ app.get('/api/conducteur', async (req, res) => {
 });
 
 //je fais la route post qui va me permettre d'ajouter un conducteur 
+
+/**
+ * @swagger
+ * /api/conducteur:
+ *   post:
+ *     summary: Crée un nouveau conducteur
+ *     responses:
+ *       200:
+ *         description: Conducteur créé avec succès
+ *         content:
+ *           application/json:
+ *             example:
+ *               id: 1
+ *               nom_conducteur: Lengouba
+ *               prenom_conducteur: Calin
+ *               numero_de_telephone: +241 74 52 98 05
+ *               modele_du_vehicule: AB 502  
+ *               nombre_de_place_disponible: 4
+ *               photo_conducteur: image.jpg
+ *               photo_du_permis_de_conduire: img.jpg
+ *               carte_crise_et_d_assurance: ABht124
+ */
+
+
 
 app.post('/api/conducteur', apiKeyMiddleware, async (req, res) => {
   try {
@@ -306,6 +345,29 @@ app.post('/api/conducteur', apiKeyMiddleware, async (req, res) => {
 });
 
 //je fais la route pour faire la mise à jour 
+
+/**
+ * @swagger
+ * /api/conducteur/{id}:
+ *   put:
+ *     summary: Met à jour un conducteur existant
+ *     responses:
+ *       200:
+ *         description: Conducteur mis à jour avec succès
+ *         content:
+ *           application/json:
+ *             example:
+ *               id: 1
+ *               nom_conducteur: Lengouba
+ *               prenom_conducteur: Calin
+ *               numero_de_telephone: +241 74 52 98 05
+ *               modele_du_vehicule: AB 502  
+ *               nombre_de_place_disponible: 4
+ *               photo_conducteur: image.jpg
+ *               photo_du_permis_de_conduire: img.jpg
+ *               carte_crise_et_d_assurance: ABht124
+ */
+
 
 app.put('/api/conducteur/:id', apiKeyMiddleware, async (req, res) => {
   try {
@@ -340,6 +402,20 @@ app.put('/api/conducteur/:id', apiKeyMiddleware, async (req, res) => {
 
 //je supprime un utilisateur 
 
+/**
+ * @swagger
+ * /api/conducteur/{id}:
+ *   delete:
+ *     summary: Supprime un conducteur existant
+ *     responses:
+ *       200:
+ *         description: Conducteur supprimé avec succès
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Conducteur supprimé avec succès
+ */
+
 app.delete('/api/conducteur/:id', apiKeyMiddleware, async (req, res) => {
   try {
     const conducteurId = parseInt(req.params.id, 10); // Obtenez l'ID du conducteur à partir des paramètres de l'URL
@@ -359,8 +435,88 @@ app.delete('/api/conducteur/:id', apiKeyMiddleware, async (req, res) => {
 
 
 
-//ecrire les differentes routes
+//les routes de la table réservation
+
+
+
+app.get('/api/reservation', async (req, res) => {
+  try {
+    const reservation = await prisma.reservation.findMany();
+    res.json(reservation);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ erreur: 'Erreur lors de la récupération des reservations depuis la base de données' });
+  }
+});
+
+
+app.post('/api/reservation', apiKeyMiddleware, async (req, res) => {
+  try {
+    console.log('Requête POST reçue');
+    console.log('Corps de la requête :', req.body);
+
+    const { id_trajet, id_passager, passager, trajet, status } = req.body;
+    console.log('Données reçues :', { id_trajet, id_passager, passager, trajet, status });
+
+    const newReservaton = await prisma.reservation.create({
+      data: {
+        id_de_reservation: undefined,
+        id_trajet: parseInt(id_trajet, 10), // Convertir en entier
+        id_passager,
+        passager,
+        trajet,
+        status,
+      },
+    });
+
+    console.log('Nouvelle réservation créée :', newReservaton);
+    res.json(newReservaton);
+  } catch (error) {
+    console.error('Erreur Prisma :', error);
+    res.status(500).json({ erreur: 'Erreur lors de la création de la réservation dans la base de données' });
+  }
+});
+
+
+
+
+
+app.get('/api/trajet', async (req, res) => {
+  try {
+    const trajet = await prisma.trajet.findMany();
+    res.json(trajet);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ erreur: 'Erreur lors de la récupération des trajets depuis la base de données' });
+  }
+});
+
+app.post('/api/trajet', apiKeyMiddleware, async (req, res) => {
+  try {
+    console.log('Requête POST reçue');
+    console.log('Corps de la requête :', req.body);
+
+    const {  id_du_conducteur, destination_d_arrivee, destination_depart,heure_de_depart, heure_d_arrivee, prix_du_trajet, conducteur, reservations     } = req.body;
+
+    console.log('Données reçues :', {  id_du_conducteur, destination_d_arrivee, destination_depart,heure_de_depart, heure_d_arrivee, prix_du_trajet, conducteur, reservations     });
+
+    const newTrajet = await prisma.trajet.create({
+      data: { id_du_conducteur: parseInt(id_du_conducteur), destination_d_arrivee, destination_depart,heure_de_depart, heure_d_arrivee, prix_du_trajet, conducteur, reservations },
+    });
+
+    console.log('Nouveau trajet créé :', newTrajet);
+    res.json(newTrajet);
+  } catch (error) {
+    console.error('Erreur Prisma :', error);
+    res.status(500).json({ erreur: 'Erreur lors de la création du conducteur dans la base de données' });
+  }
+});
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Le serveur s'exécute sur le port ${PORT}`);
 });
+
+

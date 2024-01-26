@@ -55,4 +55,5 @@ model Trajet {
   prix_du_trajet         Float
   conducteur             Conducteur @relation(fields: [id_du_conducteur], references: [id_conducteur])
   reservations           Reservation[]
+    
 }
